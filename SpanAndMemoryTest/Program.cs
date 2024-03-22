@@ -28,18 +28,27 @@ static void ReadOnlySpanTest()
     // 配列の一部をSpan<int>として取得
     ReadOnlySpan<int> span = array.AsSpan(2, 4);
 
+    // ReadOnlySpan には書き込みは用意されていない
     //// Spanを介してデータを書き込む
     //for (int i = 0; i < span.Length; i++)
     //{
     //    span[i] = 1;
     //}
 
-    // 元の配列が書き換えられている
+    // unsafe を使えば ReadOnlySpan も書き換えることができる(やってはいけない)
+    //unsafe
+    //{
+    //    fixed (int* ptr = span)
+    //    {
+    //        *ptr = 3;
+    //    }
+    //}
+
+    // 元の配列の最終結果を出力
     foreach (var x in array)
     {
         // 0, 0, 1, 1, 1, 1, 0, 0
         Console.WriteLine(x);
-
     }
 }
 
