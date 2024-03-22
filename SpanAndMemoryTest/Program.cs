@@ -18,7 +18,6 @@ static void SpanTest()
     {
         // 0, 0, 1, 1, 1, 1, 0, 0
         Console.WriteLine(x);
-
     }
 }
 
@@ -61,6 +60,34 @@ static void StringSpanTest()
 
 }
 
+static Span<int> GetSpan(int[] array)
+{
+    return array.AsSpan(2, 4);
+}
+
+static void SetSpan(Span<int> span, int value)
+{
+    for (int i = 0; i < span.Length; i++)
+    {
+        span[i] = value;
+    }
+}
+
+static void ReturnSpanTest()
+{
+    var array = new int[8];
+
+    var span = GetSpan(array);
+    SetSpan(span, 2);
+
+    // 元の配列が書き換えられている
+    foreach (var x in array)
+    {
+        // 0, 0, 1, 1, 1, 1, 0, 0
+        Console.WriteLine(x);
+    }
+}
+
 // main
 Console.WriteLine($"{nameof(SpanTest)}");
 SpanTest();
@@ -68,5 +95,7 @@ Console.WriteLine($"{nameof(ReadOnlySpanTest)}");
 ReadOnlySpanTest();
 Console.WriteLine($"{nameof(StringSpanTest)}");
 StringSpanTest();
+Console.WriteLine($"{nameof(ReturnSpanTest)}");
+ReturnSpanTest();
 
 
