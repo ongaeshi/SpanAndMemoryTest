@@ -1,4 +1,6 @@
-﻿static void SpanTest()
+﻿// https://annulusgames.com/blog/span-and-memory/
+
+static void SpanTest()
 {
     var array = new int[8];
 
@@ -42,10 +44,29 @@ static void ReadOnlySpanTest()
     }
 }
 
+static void StringSpanTest()
+{
+    // 文字列の一部'ABCDE'をReadOnlySpan<char>として取得
+    // コピーを作成しないためアロケーションもなく高速
+    {
+        ReadOnlySpan<char> span = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".AsSpan(3, 5);
+        Console.WriteLine(span.ToString());
+    }
+
+    {
+        // 文字列の場合はデフォルトで ReadOnlySpan が返ってくる模様。
+        var span = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".AsSpan(3, 5);
+        // span[1] = 'Q';
+    }
+
+}
+
 // main
 Console.WriteLine($"{nameof(SpanTest)}");
 SpanTest();
 Console.WriteLine($"{nameof(ReadOnlySpanTest)}");
 ReadOnlySpanTest();
+Console.WriteLine($"{nameof(StringSpanTest)}");
+StringSpanTest();
 
 
