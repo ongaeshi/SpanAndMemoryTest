@@ -134,6 +134,46 @@ static void ReturnNewSpanTest()
     Console.WriteLine(span.Length);
 }
 
+static void RefStructTest()
+{
+    var s = new FooStruct { span = stackalloc int[3] };
+    s.span[0] = 1;
+    s.span[1] = 2;
+    s.span[2] = 3;
+
+    foreach (var x in s.span)
+    {
+        Console.WriteLine(x);
+    }
+
+    RefStructArgTest(s);
+}
+
+static FooStruct RefStructArgTest(FooStruct s)
+{
+    foreach (var x in s.span)
+    {
+        Console.WriteLine(x);
+    }
+    // 引数で受け取った Span を戻り値で返すのは問題ない(スコープは同じなので)
+    return s;
+}
+
+static void TaskTest()
+{
+    //var s = new FooStruct { span = stackalloc int[3] };
+    Span<int> span = stackalloc int[3];
+    var s = new FooStruct { span = span };
+
+    Task.Run(() =>
+    {
+        //foreach (var x in s.span)
+        //{
+        //    Console.WriteLine(x);
+        //}
+    });
+}
+
 // main
 Console.WriteLine($"{nameof(SpanTest)}");
 SpanTest();
@@ -147,6 +187,13 @@ Console.WriteLine($"{nameof(StackAllocTest)}");
 StackAllocTest();
 Console.WriteLine($"{nameof(ReturnNewSpanTest)}");
 ReturnNewSpanTest();
+Console.WriteLine($"{nameof(RefStructTest)}");
+RefStructTest();
 
+// ref構造体はそれ自体がスタックに置かれることを保証されるため、内部にもref構造体を持てる
+public ref struct FooStruct
+{
+    public Span<int> span;
+}
 
 
