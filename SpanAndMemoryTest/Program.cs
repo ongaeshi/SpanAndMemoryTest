@@ -97,6 +97,43 @@ static void ReturnSpanTest()
     }
 }
 
+static void StackAllocTest()
+{
+    // ポインタではなくSpan<T>で受け取る
+    // → こうすると unsafe 外でも stackalloc が使える。
+    Span<int> buffer = stackalloc int[10];
+
+    try
+    {
+        foreach (var x in buffer)
+        {
+            Console.WriteLine(x);
+        }
+
+        // 境界外にアクセスした場合はちゃんと例外がスローされる
+        //buffer[-1] = 1;
+    }
+    catch (IndexOutOfRangeException ex)
+    {
+        Console.WriteLine(ex);
+    }
+}
+
+static Span<int> ReturnSpan()
+{
+    //Span<int> stackSpan = stackalloc int[10];
+    //return stackSpan;
+
+    Span<int> arraySpan = new int[10].AsSpan();
+    return arraySpan;
+}
+
+static void ReturnNewSpanTest()
+{
+    var span = ReturnSpan();
+    Console.WriteLine(span.Length);
+}
+
 // main
 Console.WriteLine($"{nameof(SpanTest)}");
 SpanTest();
@@ -106,5 +143,10 @@ Console.WriteLine($"{nameof(StringSpanTest)}");
 StringSpanTest();
 Console.WriteLine($"{nameof(ReturnSpanTest)}");
 ReturnSpanTest();
+Console.WriteLine($"{nameof(StackAllocTest)}");
+StackAllocTest();
+Console.WriteLine($"{nameof(ReturnNewSpanTest)}");
+ReturnNewSpanTest();
+
 
 
